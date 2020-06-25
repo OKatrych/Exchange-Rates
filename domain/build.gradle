@@ -6,6 +6,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation deps.jetbrains.kotlin_stdlib
     implementation deps.jetbrains.kotlinx_serialization
+    implementation deps.jetbrains.kotlin_coroutines
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8

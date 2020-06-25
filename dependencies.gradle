@@ -24,6 +24,8 @@ versions.retrofit = "2.9.0"
 versions.retrofit = "0.5.0"
 versions.logging_interceptor = "3.11.0"
 
+versions.kotlin_coroutines = "1.3.7"
+
 def deps = [:]
 
 def gradle_plugin = [:]
@@ -35,6 +37,7 @@ deps.gradle_plugin = gradle_plugin
 def jetbrains = [:]
 jetbrains.kotlin_stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$versions.kotlin"
 jetbrains.kotlinx_serialization = "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$versions.kotlinx_serialization"
+jetbrains.kotlin_coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.kotlin_coroutines"
 deps.jetbrains = jetbrains
 
 def androidx = [:]

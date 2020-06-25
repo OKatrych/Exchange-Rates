@@ -38,6 +38,7 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
 
     implementation deps.jetbrains.kotlin_stdlib
+    implementation deps.jetbrains.kotlin_coroutines
 
     implementation deps.androidx.appcompat_appcompat
     implementation deps.androidx.core_ktx
