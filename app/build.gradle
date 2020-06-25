@@ -1,0 +1,63 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlinx-serialization'
+apply from: '../ktlint.gradle'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.3"
+
+    defaultConfig {
+        applicationId "eu.okatrych.exchangerates"
+        minSdkVersion 23
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    compileOptions {
+        // Flag to enable support for the new language APIs
+        coreLibraryDesugaringEnabled true
+        // Sets Java compatibility to Java 8
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+
+    implementation deps.jetbrains.kotlin_stdlib
+
+    implementation deps.androidx.appcompat_appcompat
+    implementation deps.androidx.core_ktx
+    implementation deps.androidx.constraintlayout
+    implementation deps.androidx.viewmodel_ktx
+    implementation deps.androidx.livedata_ktx
+    implementation deps.androidx.viewmodel_savedstate
+
+    implementation deps.google.material
+
+    implementation deps.koin.android
+
+    implementation deps.timber.timber
+
+    kapt deps.androidx.lifecycle_compiler
+
+    testImplementation deps.koin.test
+    testImplementation deps.tests.junit
+    testImplementation deps.tests.mockk
+    androidTestImplementation deps.tests.junit_androidx_ext
+    coreLibraryDesugaring deps.core.desugaring
+}
