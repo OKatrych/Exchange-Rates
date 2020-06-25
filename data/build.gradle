@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlinx-serialization'
 
 android {
     compileSdkVersion 29
@@ -38,8 +39,11 @@ dependencies {
 
     implementation deps.koin.android
     implementation deps.timber.timber
+    implementation deps.jetbrains.kotlinx_serialization
     testImplementation deps.koin.test
     testImplementation deps.tests.junit
     testImplementation deps.tests.mockk
     coreLibraryDesugaring deps.core.desugaring
+
+    implementation project(path: ":domain")
 }

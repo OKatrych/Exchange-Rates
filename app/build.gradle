@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlinx-serialization'
 apply from: '../ktlint.gradle'
 
 android {
@@ -60,4 +59,7 @@ dependencies {
     testImplementation deps.tests.mockk
     androidTestImplementation deps.tests.junit_androidx_ext
     coreLibraryDesugaring deps.core.desugaring
+
+    implementation project(path: ":domain")
+    implementation project(path: ":data")
 }
