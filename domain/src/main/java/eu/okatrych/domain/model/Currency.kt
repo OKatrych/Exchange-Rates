@@ -1,4 +1,4 @@
-package eu.okatrych.domain.entity
+package eu.okatrych.domain.model
 
 import java.util.Locale
 
