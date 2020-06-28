@@ -1,11 +1,11 @@
-package eu.okatrych.data.model
+package eu.okatrych.data.source.remote.model
 
 import com.squareup.moshi.Json
 import eu.okatrych.domain.model.Currency
 import eu.okatrych.domain.model.RateValue
 import org.threeten.bp.LocalDateTime
 
-data class ExchangeRate(
+data class JsonExchangeRate(
     @Json(name = "base")
     val baseCurrency: Currency,
     @Json(name = "start_at")

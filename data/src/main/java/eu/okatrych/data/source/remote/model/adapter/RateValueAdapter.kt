@@ -1,4 +1,4 @@
-package eu.okatrych.data.model.adapter
+package eu.okatrych.data.source.remote.model.adapter
 
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.Moshi

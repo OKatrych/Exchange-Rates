@@ -47,6 +47,9 @@ dependencies {
     implementation deps.moshi.moshi
     implementation deps.moshi.kotlin
 
+    implementation deps.room.runtime
+    implementation deps.room.ktx
+
     testImplementation deps.koin.test
     testImplementation deps.tests.junit
     testImplementation deps.tests.mockk

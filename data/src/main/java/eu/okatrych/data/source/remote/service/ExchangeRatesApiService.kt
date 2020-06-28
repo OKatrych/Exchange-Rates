@@ -1,6 +1,6 @@
 package eu.okatrych.data.source.remote.service
 
-import eu.okatrych.data.model.ExchangeRate
+import eu.okatrych.data.source.remote.model.JsonExchangeRate
 import eu.okatrych.domain.model.Currency
 import org.threeten.bp.LocalDate
 import retrofit2.http.GET
@@ -14,5 +14,5 @@ interface ExchangeRatesApiService {
         @Query("symbols") specificCurrencies: String, // USD,EUR,PLN
         @Query("start_at") startDate: LocalDate,
         @Query("end_at") endDate: LocalDate
-    ): ExchangeRate
+    ): JsonExchangeRate
 }

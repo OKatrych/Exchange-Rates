@@ -11,5 +11,5 @@ interface IExchangeRateDataSource {
         specificCurrencies: List<Currency>,
         startDate: LocalDate,
         endDate: LocalDate
-    ): ExchangeRate
+    ): ExchangeRate?
 }

@@ -1,6 +1,6 @@
 package eu.okatrych.data.source
 
-import eu.okatrych.data.source.local.datasource.ILocalExchangeRateDataSource
+import eu.okatrych.data.source.local.ILocalExchangeRateDataSource
 import eu.okatrych.data.source.remote.datasource.IRemoteExchangeRateDataSource
 import eu.okatrych.domain.model.Currency
 import eu.okatrych.domain.model.ExchangeRate
@@ -23,25 +23,26 @@ class ExchangeRateRepository(
         startDate: LocalDate,
         endDate: LocalDate
     ): ExchangeRate {
-        if (localDataSource.isExchangeRateStored()) {
-            val localExchangeRate = localDataSource.getExchangeRate(
-                baseCurrency,
-                specificCurrencies,
-                startDate,
-                endDate
+        val localExchangeRate: ExchangeRate? = localDataSource.getExchangeRate(
+            baseCurrency,
+            specificCurrencies,
+            startDate,
+            endDate
+        )
+        // use local exchange rate when it's present and is not expired (timestamp < 10 minutes)
+        return if (localExchangeRate != null && localExchangeRate.timestamp
+                .plus(EXCHANGE_RATE_TTL, ChronoUnit.MINUTES)
+                .isAfter(LocalDateTime.now())
+        ) {
+            localExchangeRate
+        } else {
+            remoteDataSource.getExchangeRate(
+                baseCurrency, specificCurrencies, startDate, endDate
+            )?.also {
+                localDataSource.insertExchangeRate(it)
+            } ?: throw IExchangeRateRepository.Error.RemoteDataSourceError.UnknownError(
+                NullPointerException("remoteDataSource.getExchangeRate() returned null value")
             )
-            // while exchange rate is not expired (timestamp < 10 minutes) use value from local DB
-            if (localExchangeRate.timestamp
-                    .plus(EXCHANGE_RATE_TTL, ChronoUnit.MINUTES)
-                    .isAfter(LocalDateTime.now())
-            ) {
-                return localExchangeRate
-            }
-        }
-        return remoteDataSource.getExchangeRate(
-            baseCurrency, specificCurrencies, startDate, endDate
-        ).also {
-            localDataSource.insertExchangeRate(it)
         }
     }
 }
