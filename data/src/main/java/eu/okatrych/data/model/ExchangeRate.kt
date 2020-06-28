@@ -1,14 +1,21 @@
 package eu.okatrych.data.model
 
+import com.squareup.moshi.Json
 import eu.okatrych.domain.model.Currency
 import eu.okatrych.domain.model.RateValue
 import org.threeten.bp.LocalDateTime
 
 data class ExchangeRate(
+    @Json(name = "base")
     val baseCurrency: Currency,
-    val startDate: String?, // 2018-01-01
-    val endDate: String?, // 2018-01-01
-    val rates: List<RateValue>?,
-    val timestamp: LocalDateTime = LocalDateTime.now(),
-    val error: String? = null
+    @Json(name = "start_at")
+    val startDate: String, // 2018-01-01
+    @Json(name = "end_at")
+    val endDate: String, // 2018-01-01
+    @Json(name = "rates")
+    val rates: List<RateValue>,
+    @Json(name = "error")
+    val error: String? = null,
+    @Transient
+    val timestamp: LocalDateTime = LocalDateTime.now()
 )

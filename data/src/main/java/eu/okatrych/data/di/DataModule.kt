@@ -1,8 +1,9 @@
 package eu.okatrych.data.di
 
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import eu.okatrych.data.BuildConfig
-import eu.okatrych.data.model.adapter.ExchangeRateAdapter
+import eu.okatrych.data.model.adapter.RateValueAdapter
 import eu.okatrych.data.model.mapper.ExchangeRateToDomainMapper
 import eu.okatrych.data.source.ExchangeRateRepository
 import eu.okatrych.data.source.remote.ExchangeRatesApiService
@@ -46,7 +47,8 @@ fun provideRetrofit(moshi: Moshi): Retrofit {
 
 fun provideMoshi(): Moshi {
     return Moshi.Builder()
-        .add(ExchangeRateAdapter())
+        .add(RateValueAdapter())
+        .add(KotlinJsonAdapterFactory())
         .build()
 }
 

@@ -85,7 +85,7 @@ deps.date = date
 
 def moshi = [:]
 moshi.moshi = "com.squareup.moshi:moshi:$versions.moshi"
-moshi.codegen = "com.squareup.moshi:moshi-kotlin-codegen:$versions.moshi"
+moshi.kotlin = "com.squareup.moshi:moshi-kotlin:$versions.moshi"
 deps.moshi = moshi
 
 ext.deps = deps
