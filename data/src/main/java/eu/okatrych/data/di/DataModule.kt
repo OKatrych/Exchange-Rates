@@ -9,10 +9,15 @@ import eu.okatrych.data.source.ExchangeRateRepository
 import eu.okatrych.data.source.local.ILocalExchangeRateDataSource
 import eu.okatrych.data.source.local.LocalExchangeRateDataSource
 import eu.okatrych.data.source.local.db.ExchangeRateDatabase
+import eu.okatrych.data.source.local.model.RoomExchangeRate
+import eu.okatrych.data.source.local.model.mapper.ExchangeRateToRoomMapper
+import eu.okatrych.data.source.local.model.mapper.RoomExchangeRateToDomainMapper
 import eu.okatrych.data.source.remote.datasource.IRemoteExchangeRateDataSource
 import eu.okatrych.data.source.remote.datasource.RemoteExchangeRateDataSource
 import eu.okatrych.data.source.remote.service.ExchangeRatesApiService
+import eu.okatrych.domain.model.ExchangeRate
 import eu.okatrych.domain.repository.IExchangeRateRepository
+import eu.okatrych.domain.util.IMapper
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
@@ -25,9 +30,13 @@ val dataModule = module {
     single { provideApiService(get()) }
 
     factory { JsonExchangeRateToDomainMapper() }
+    factory<IMapper<RoomExchangeRate, ExchangeRate>> { RoomExchangeRateToDomainMapper() }
+    factory<IMapper<ExchangeRate, RoomExchangeRate>> { ExchangeRateToRoomMapper() }
+
+
     single { ExchangeRateDatabase.getInstance(androidContext()) }
     single<IRemoteExchangeRateDataSource> { RemoteExchangeRateDataSource(get(), get()) }
-    single<ILocalExchangeRateDataSource> { LocalExchangeRateDataSource() }
+    single<ILocalExchangeRateDataSource> { LocalExchangeRateDataSource(get(), get(), get()) }
     single<IExchangeRateRepository> { ExchangeRateRepository(get(), get()) }
 }
 
