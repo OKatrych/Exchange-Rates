@@ -7,7 +7,7 @@ import org.threeten.bp.LocalDate
 
 interface IExchangeRateRepository {
 
-    suspend fun loadExchangeRate(
+    suspend fun getExchangeRate(
         baseCurrency: Currency = DEFAULT_BASE_CURRENCY,
         specificCurrencies: List<Currency> = Currency.values().toList(),
         startDate: LocalDate = LocalDate.now(),

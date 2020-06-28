@@ -6,9 +6,12 @@ import eu.okatrych.data.BuildConfig
 import eu.okatrych.data.model.adapter.RateValueAdapter
 import eu.okatrych.data.model.mapper.ExchangeRateToDomainMapper
 import eu.okatrych.data.source.ExchangeRateRepository
-import eu.okatrych.data.source.remote.ExchangeRatesApiService
+import eu.okatrych.data.source.local.datasource.ILocalExchangeRateDataSource
+import eu.okatrych.data.source.local.datasource.LocalExchangeRateDataSource
+import eu.okatrych.data.source.remote.datasource.IRemoteExchangeRateDataSource
+import eu.okatrych.data.source.remote.datasource.RemoteExchangeRateDataSource
+import eu.okatrych.data.source.remote.service.ExchangeRatesApiService
 import eu.okatrych.domain.repository.IExchangeRateRepository
-import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.dsl.module
@@ -20,6 +23,8 @@ val dataModule = module {
     single { provideApiService(get()) }
 
     factory { ExchangeRateToDomainMapper() }
+    single<IRemoteExchangeRateDataSource> { RemoteExchangeRateDataSource(get(), get()) }
+    single<ILocalExchangeRateDataSource> { LocalExchangeRateDataSource() }
     single<IExchangeRateRepository> { ExchangeRateRepository(get(), get()) }
 }
 
@@ -37,7 +42,6 @@ fun provideRetrofit(moshi: Moshi): Retrofit {
         followRedirects(false)
     }.build()
 
-    val contentType = MediaType.get("application/json")
     return Retrofit.Builder()
         .baseUrl(BuildConfig.API_URL)
         .addConverterFactory(MoshiConverterFactory.create(moshi))
@@ -52,4 +56,6 @@ fun provideMoshi(): Moshi {
         .build()
 }
 
-fun provideApiService(retrofit: Retrofit): ExchangeRatesApiService = retrofit.create(ExchangeRatesApiService::class.java)
+fun provideApiService(retrofit: Retrofit): ExchangeRatesApiService = retrofit.create(
+    ExchangeRatesApiService::class.java
+)

@@ -1,4 +1,4 @@
-package eu.okatrych.data.source.remote
+package eu.okatrych.data.source.remote.service
 
 import eu.okatrych.data.model.ExchangeRate
 import eu.okatrych.domain.model.Currency
