@@ -12,8 +12,8 @@ import eu.okatrych.data.source.local.db.ExchangeRateDatabase
 import eu.okatrych.data.source.local.model.RoomExchangeRate
 import eu.okatrych.data.source.local.model.mapper.ExchangeRateToRoomMapper
 import eu.okatrych.data.source.local.model.mapper.RoomExchangeRateToDomainMapper
-import eu.okatrych.data.source.remote.datasource.IRemoteExchangeRateDataSource
-import eu.okatrych.data.source.remote.datasource.RemoteExchangeRateDataSource
+import eu.okatrych.data.source.remote.IRemoteExchangeRateDataSource
+import eu.okatrych.data.source.remote.RemoteExchangeRateDataSource
 import eu.okatrych.data.source.remote.service.ExchangeRatesApiService
 import eu.okatrych.domain.model.ExchangeRate
 import eu.okatrych.domain.repository.IExchangeRateRepository
@@ -35,7 +35,12 @@ val dataModule = module {
 
 
     single { ExchangeRateDatabase.getInstance(androidContext()) }
-    single<IRemoteExchangeRateDataSource> { RemoteExchangeRateDataSource(get(), get()) }
+    single<IRemoteExchangeRateDataSource> {
+        RemoteExchangeRateDataSource(
+            get(),
+            get()
+        )
+    }
     single<ILocalExchangeRateDataSource> { LocalExchangeRateDataSource(get(), get(), get()) }
     single<IExchangeRateRepository> { ExchangeRateRepository(get(), get()) }
 }

@@ -1,7 +1,7 @@
 package eu.okatrych.data.source
 
 import eu.okatrych.data.source.local.ILocalExchangeRateDataSource
-import eu.okatrych.data.source.remote.datasource.IRemoteExchangeRateDataSource
+import eu.okatrych.data.source.remote.IRemoteExchangeRateDataSource
 import eu.okatrych.domain.model.Currency
 import eu.okatrych.domain.model.ExchangeRate
 import eu.okatrych.domain.repository.IExchangeRateRepository

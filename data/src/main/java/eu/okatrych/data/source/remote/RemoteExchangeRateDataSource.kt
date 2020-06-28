@@ -1,4 +1,4 @@
-package eu.okatrych.data.source.remote.datasource
+package eu.okatrych.data.source.remote
 
 import eu.okatrych.data.source.remote.model.mapper.JsonExchangeRateToDomainMapper
 import eu.okatrych.data.source.remote.service.ExchangeRatesApiService
