@@ -12,4 +12,6 @@ interface IExchangeRateDataSource {
         startDate: LocalDate,
         endDate: LocalDate
     ): List<RateValue>
+
+    suspend fun getLatestExchangeRates(baseCurrency: Currency): List<RateValue>
 }

@@ -6,9 +6,9 @@ import eu.okatrych.domain.repository.IExchangeRateRepository
 import eu.okatrych.domain.util.DEFAULT_BASE_CURRENCY
 import org.threeten.bp.LocalDate
 
-class GetExchangeRateUseCase(
+class GetExchangeRatesUseCase(
     private val exchangeRateRepository: IExchangeRateRepository
-) : UseCase<GetExchangeRateUseCase.Params, List<RateValue>>() {
+) : UseCase<GetExchangeRatesUseCase.Params, List<RateValue>>() {
 
     data class Params(
         val baseCurrency: Currency = DEFAULT_BASE_CURRENCY,
@@ -18,6 +18,11 @@ class GetExchangeRateUseCase(
     )
 
     override suspend fun run(params: Params): List<RateValue> {
-        return exchangeRateRepository.getExchangeRates()
+        return exchangeRateRepository.getExchangeRates(
+            baseCurrency = params.baseCurrency,
+            specificCurrencies = params.specificCurrencies,
+            startDate = params.startDate,
+            endDate = params.endDate
+        )
     }
 }

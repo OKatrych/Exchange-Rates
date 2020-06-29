@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 29
@@ -47,8 +48,14 @@ dependencies {
     implementation deps.moshi.moshi
     implementation deps.moshi.kotlin
 
+    debugImplementation deps.facebook.flipper
+    debugImplementation deps.facebook.soloader
+    debugImplementation deps.facebook.flipper_network_plugin
+    releaseImplementation deps.facebook.flipper_noop
+
     implementation deps.room.runtime
     implementation deps.room.ktx
+    kapt deps.room.compiler
 
     testImplementation deps.koin.test
     testImplementation deps.tests.junit

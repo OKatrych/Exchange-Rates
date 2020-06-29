@@ -10,6 +10,7 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 
 class RateValueAdapter {
+
     /*
      *     "rates": {
      *         "2018-01-03": {
@@ -27,27 +28,42 @@ class RateValueAdapter {
         val moshi = Moshi.Builder().build()
         val jsonObject = JSONObject(moshi.adapter(Map::class.java).toJson(map))
 
-        val base = jsonObject.getString("base")
+        val baseCurrency = jsonObject.getString("base")
         val ratesListObject = jsonObject.getJSONObject("rates")
+        val latestDate = jsonObject.optString("date").takeIf { it.isNotEmpty() }
         val error = jsonObject.optString("error").takeIf { it.isNotEmpty() }
 
         if (error != null) {
             throw IllegalStateException("Error while parsing JSON: $error")
         }
 
-        return ratesListObject.keys().asSequence().flatMap { dateField ->
-            val rateObject = ratesListObject.getJSONObject(dateField)
-            return@flatMap rateObject.keys().asSequence().map { currencyField ->
-                val rateField = rateObject.getDouble(currencyField)
-                RateValue(
-                    baseCurrency = Currency.fromString(base),
-                    currency = Currency.fromString(currencyField),
-                    date = LocalDate.parse(dateField),
-                    rate = rateField,
-                    timestamp = LocalDateTime.now()
-                )
-            }
-        }.toList()
+        // when latestDate is not null that means that "rates" object is not containing dates
+        return if (latestDate != null) {
+            parseRatesList(baseCurrency, latestDate, ratesListObject)
+                .toList()
+        } else {
+            ratesListObject.keys().asSequence().flatMap { dateField ->
+                val rateObject = ratesListObject.getJSONObject(dateField)
+                return@flatMap parseRatesList(baseCurrency, dateField, rateObject)
+            }.toList()
+        }
+    }
+
+    private fun parseRatesList(
+        baseCurrency: String,
+        date: String,
+        rateObject: JSONObject
+    ): Sequence<RateValue> {
+        return rateObject.keys().asSequence().map { currencyField ->
+            val rateField = rateObject.getDouble(currencyField)
+            RateValue(
+                baseCurrency = Currency.fromString(baseCurrency),
+                currency = Currency.fromString(currencyField),
+                date = LocalDate.parse(date),
+                rate = rateField,
+                timestamp = LocalDateTime.now()
+            )
+        }
     }
 
     @ToJson

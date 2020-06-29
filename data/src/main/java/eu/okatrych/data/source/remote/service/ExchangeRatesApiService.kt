@@ -15,4 +15,9 @@ interface ExchangeRatesApiService {
         @Query("start_at") startDate: LocalDate,
         @Query("end_at") endDate: LocalDate
     ): List<RateValue>
+
+    @GET("latest")
+    suspend fun getLatestExchangeRates(
+        @Query("base") baseCurrency: Currency
+    ): List<RateValue>
 }

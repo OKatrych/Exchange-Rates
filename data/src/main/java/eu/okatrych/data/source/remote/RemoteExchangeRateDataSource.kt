@@ -26,6 +26,12 @@ class RemoteExchangeRateDataSource(
         }
     }
 
+    override suspend fun getLatestExchangeRates(baseCurrency: Currency): List<RateValue> {
+        return wrapExceptions {
+            exchangeRatesApiService.getLatestExchangeRates(baseCurrency)
+        }
+    }
+
     private inline fun <T> wrapExceptions(block: () -> T): T {
         return try {
             block.invoke()

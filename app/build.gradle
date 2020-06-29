@@ -56,6 +56,13 @@ dependencies {
     implementation deps.groupie.core
     implementation deps.groupie.ktx
 
+    implementation deps.chart.mpchart
+
+    debugImplementation deps.facebook.flipper
+    debugImplementation deps.facebook.soloader
+    debugImplementation deps.facebook.flipper_network_plugin
+    releaseImplementation deps.facebook.flipper_noop
+
     kapt deps.androidx.lifecycle_compiler
 
     testImplementation deps.koin.test

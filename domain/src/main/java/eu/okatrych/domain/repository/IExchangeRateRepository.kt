@@ -7,11 +7,21 @@ import org.threeten.bp.LocalDate
 
 interface IExchangeRateRepository {
 
+    /**
+     * Load exchange rates for specific date
+     */
     suspend fun getExchangeRates(
         baseCurrency: Currency = DEFAULT_BASE_CURRENCY,
         specificCurrencies: List<Currency> = Currency.values().toList(),
         startDate: LocalDate = LocalDate.now(),
         endDate: LocalDate = startDate
+    ): List<RateValue>
+
+    /**
+     * Load latest available exchange rates
+     */
+    suspend fun getLatestExchangeRates(
+        baseCurrency: Currency = DEFAULT_BASE_CURRENCY
     ): List<RateValue>
 
     sealed class Error(

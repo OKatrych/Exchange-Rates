@@ -21,8 +21,8 @@ abstract class UseCase<in Params, out Type>(
 
     protected abstract suspend fun run(params: Params): Type
 
-    suspend operator fun invoke(params: Params, job: Job): Type {
-        return withContext(job + executionDispatcher) {
+    suspend operator fun invoke(params: Params): Type {
+        return withContext(executionDispatcher) {
             run(params)
         }
     }

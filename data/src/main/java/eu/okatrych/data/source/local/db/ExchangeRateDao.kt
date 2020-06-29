@@ -9,7 +9,8 @@ import eu.okatrych.data.source.local.model.RoomRateValue
 @Dao
 interface ExchangeRateDao {
 
-    @Query("""
+    @Query(
+        """
         SELECT * FROM exchange_rates 
         WHERE baseCurrency = :baseCurrency 
         AND currency IN(:specificCurrencies) 
@@ -20,6 +21,15 @@ interface ExchangeRateDao {
         endDate: String,
         baseCurrency: String,
         specificCurrencies: List<String>
+    ): List<RoomRateValue>
+
+    @Query(
+        """
+        SELECT * FROM exchange_rates 
+        WHERE baseCurrency = :baseCurrency AND date=(SELECT MAX(date) FROM exchange_rates)"""
+    )
+    suspend fun getLatestExchangeRates(
+        baseCurrency: String
     ): List<RoomRateValue>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

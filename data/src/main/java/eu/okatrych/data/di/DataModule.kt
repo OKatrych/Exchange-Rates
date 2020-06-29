@@ -1,5 +1,7 @@
 package eu.okatrych.data.di
 
+import com.facebook.flipper.plugins.network.FlipperOkhttpInterceptor
+import com.facebook.flipper.plugins.network.NetworkFlipperPlugin
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import eu.okatrych.data.BuildConfig
@@ -20,6 +22,7 @@ import eu.okatrych.domain.util.IMapper
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -28,18 +31,29 @@ val dataModule = module {
     single { provideRetrofit(provideMoshi()) }
     single { provideApiService(get()) }
 
-    factory<IMapper<RoomRateValue, RateValue>> { RoomRateValueToDomainMapper() }
-    factory<IMapper<RateValue, RoomRateValue>> { RateValueToRoomMapper() }
+    factory<IMapper<RoomRateValue, RateValue>>(named<RoomRateValueToDomainMapper>()) {
+        RoomRateValueToDomainMapper()
+    }
+    factory<IMapper<RateValue, RoomRateValue>>(named<RateValueToRoomMapper>()) {
+        RateValueToRoomMapper()
+    }
 
 
     single { ExchangeRateDatabase.getInstance(androidContext()) }
     single<IRemoteExchangeRateDataSource> { RemoteExchangeRateDataSource(get()) }
-    single<ILocalExchangeRateDataSource> { LocalExchangeRateDataSource(get(), get(), get()) }
+    single<ILocalExchangeRateDataSource> {
+        LocalExchangeRateDataSource(
+            exchangeRateDatabase = get(),
+            rateValueToRoomMapper = get(named<RateValueToRoomMapper>()),
+            roomRateValueToDomainMapper = get(named<RoomRateValueToDomainMapper>())
+        )
+    }
     single<IExchangeRateRepository> { ExchangeRateRepository(get(), get()) }
 }
 
 fun provideRetrofit(moshi: Moshi): Retrofit {
     val client = OkHttpClient.Builder().apply {
+        addNetworkInterceptor(FlipperOkhttpInterceptor(NetworkFlipperPlugin()))
         addInterceptor(
             HttpLoggingInterceptor().setLevel(
                 if (BuildConfig.DEBUG) {

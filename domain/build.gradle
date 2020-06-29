@@ -6,6 +6,7 @@ dependencies {
     implementation deps.jetbrains.kotlin_stdlib
     implementation deps.jetbrains.kotlin_coroutines
     implementation deps.date.threetenabp
+    implementation deps.koin.kotlin
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
