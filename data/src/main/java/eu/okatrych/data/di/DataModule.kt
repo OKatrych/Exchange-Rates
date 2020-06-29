@@ -4,18 +4,17 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import eu.okatrych.data.BuildConfig
 import eu.okatrych.data.source.remote.model.adapter.RateValueAdapter
-import eu.okatrych.data.source.remote.model.mapper.JsonExchangeRateToDomainMapper
 import eu.okatrych.data.source.ExchangeRateRepository
 import eu.okatrych.data.source.local.ILocalExchangeRateDataSource
 import eu.okatrych.data.source.local.LocalExchangeRateDataSource
 import eu.okatrych.data.source.local.db.ExchangeRateDatabase
-import eu.okatrych.data.source.local.model.RoomExchangeRate
-import eu.okatrych.data.source.local.model.mapper.ExchangeRateToRoomMapper
-import eu.okatrych.data.source.local.model.mapper.RoomExchangeRateToDomainMapper
+import eu.okatrych.data.source.local.model.RoomRateValue
+import eu.okatrych.data.source.local.model.mapper.RateValueToRoomMapper
+import eu.okatrych.data.source.local.model.mapper.RoomRateValueToDomainMapper
 import eu.okatrych.data.source.remote.IRemoteExchangeRateDataSource
 import eu.okatrych.data.source.remote.RemoteExchangeRateDataSource
 import eu.okatrych.data.source.remote.service.ExchangeRatesApiService
-import eu.okatrych.domain.model.ExchangeRate
+import eu.okatrych.domain.model.RateValue
 import eu.okatrych.domain.repository.IExchangeRateRepository
 import eu.okatrych.domain.util.IMapper
 import okhttp3.OkHttpClient
@@ -29,18 +28,12 @@ val dataModule = module {
     single { provideRetrofit(provideMoshi()) }
     single { provideApiService(get()) }
 
-    factory { JsonExchangeRateToDomainMapper() }
-    factory<IMapper<RoomExchangeRate, ExchangeRate>> { RoomExchangeRateToDomainMapper() }
-    factory<IMapper<ExchangeRate, RoomExchangeRate>> { ExchangeRateToRoomMapper() }
+    factory<IMapper<RoomRateValue, RateValue>> { RoomRateValueToDomainMapper() }
+    factory<IMapper<RateValue, RoomRateValue>> { RateValueToRoomMapper() }
 
 
     single { ExchangeRateDatabase.getInstance(androidContext()) }
-    single<IRemoteExchangeRateDataSource> {
-        RemoteExchangeRateDataSource(
-            get(),
-            get()
-        )
-    }
+    single<IRemoteExchangeRateDataSource> { RemoteExchangeRateDataSource(get()) }
     single<ILocalExchangeRateDataSource> { LocalExchangeRateDataSource(get(), get(), get()) }
     single<IExchangeRateRepository> { ExchangeRateRepository(get(), get()) }
 }

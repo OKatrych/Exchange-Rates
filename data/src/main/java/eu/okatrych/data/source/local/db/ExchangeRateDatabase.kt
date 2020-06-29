@@ -4,9 +4,9 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import eu.okatrych.data.source.local.model.RoomExchangeRate
+import eu.okatrych.data.source.local.model.RoomRateValue
 
-@Database(entities = [RoomExchangeRate::class], version = 1)
+@Database(entities = [RoomRateValue::class], version = 1)
 abstract class ExchangeRateDatabase : RoomDatabase() {
 
     abstract val exchangeRateDao: ExchangeRateDao

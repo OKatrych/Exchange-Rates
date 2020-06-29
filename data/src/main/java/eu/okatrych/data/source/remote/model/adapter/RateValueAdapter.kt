@@ -7,7 +7,7 @@ import eu.okatrych.domain.model.Currency
 import eu.okatrych.domain.model.RateValue
 import org.json.JSONObject
 import org.threeten.bp.LocalDate
-
+import org.threeten.bp.LocalDateTime
 
 class RateValueAdapter {
     /*
@@ -27,14 +27,24 @@ class RateValueAdapter {
         val moshi = Moshi.Builder().build()
         val jsonObject = JSONObject(moshi.adapter(Map::class.java).toJson(map))
 
-        return jsonObject.keys().asSequence().flatMap { dateField ->
-            val rateObject = jsonObject.getJSONObject(dateField)
+        val base = jsonObject.getString("base")
+        val ratesListObject = jsonObject.getJSONObject("rates")
+        val error = jsonObject.optString("error").takeIf { it.isNotEmpty() }
+
+        if (error != null) {
+            throw IllegalStateException("Error while parsing JSON: $error")
+        }
+
+        return ratesListObject.keys().asSequence().flatMap { dateField ->
+            val rateObject = ratesListObject.getJSONObject(dateField)
             return@flatMap rateObject.keys().asSequence().map { currencyField ->
                 val rateField = rateObject.getDouble(currencyField)
                 RateValue(
-                    date = LocalDate.parse(dateField),
+                    baseCurrency = Currency.fromString(base),
                     currency = Currency.fromString(currencyField),
-                    rate = rateField
+                    date = LocalDate.parse(dateField),
+                    rate = rateField,
+                    timestamp = LocalDateTime.now()
                 )
             }
         }.toList()

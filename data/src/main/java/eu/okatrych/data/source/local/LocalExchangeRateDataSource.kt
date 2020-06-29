@@ -1,56 +1,45 @@
 package eu.okatrych.data.source.local
 
 import eu.okatrych.data.source.local.db.ExchangeRateDatabase
-import eu.okatrych.data.source.local.model.RoomExchangeRate
+import eu.okatrych.data.source.local.model.RoomRateValue
 import eu.okatrych.domain.model.Currency
-import eu.okatrych.domain.model.ExchangeRate
+import eu.okatrych.domain.model.RateValue
 import eu.okatrych.domain.repository.IExchangeRateRepository
 import eu.okatrych.domain.util.IMapper
 import org.threeten.bp.LocalDate
 
 class LocalExchangeRateDataSource(
     private val exchangeRateDatabase: ExchangeRateDatabase,
-    private val roomExchangeRateToDomainMapper: IMapper<RoomExchangeRate, ExchangeRate>,
-    private val exchangeRateToRoomMapper: IMapper<ExchangeRate, RoomExchangeRate>
+    private val roomRateValueToDomainMapper: IMapper<RoomRateValue, RateValue>,
+    private val rateValueToRoomMapper: IMapper<RateValue, RoomRateValue>
 ) : ILocalExchangeRateDataSource {
 
-    override suspend fun getExchangeRate(
+    override suspend fun getExchangeRates(
         baseCurrency: Currency,
         specificCurrencies: List<Currency>,
         startDate: LocalDate,
         endDate: LocalDate
-    ): ExchangeRate? {
+    ): List<RateValue> {
         return wrapExceptions {
-            val dbRate = exchangeRateDatabase.exchangeRateDao
-                .getExchangeRateByBaseCurrency(baseCurrency)
-                .let { roomExchangeRateToDomainMapper.map(it) }
-            return if (dbRate.meetsExpectations(specificCurrencies, startDate, endDate)) {
-                dbRate
-            } else {
-                null
-            }
+            exchangeRateDatabase.exchangeRateDao
+                .getExchangeRates(
+                    startDate.toString(),
+                    endDate.toString(),
+                    baseCurrency.name,
+                    specificCurrencies.map { it.name }
+                ).map(roomRateValueToDomainMapper::map)
         }
     }
 
-    override suspend fun insertExchangeRate(exchangeRate: ExchangeRate) {
+    override suspend fun insertExchangeRates(exchangeRates: List<RateValue>) {
         wrapExceptions {
-            exchangeRateDatabase.exchangeRateDao.insertExchangeRate(
-                exchangeRateToRoomMapper.map(exchangeRate)
+            exchangeRateDatabase.exchangeRateDao.insertExchangeRates(
+                exchangeRates.map(rateValueToRoomMapper::map)
             )
         }
     }
 
-    private fun ExchangeRate.meetsExpectations(
-        expectedSpecificCurrencies: List<Currency>,
-        expectedStartDate: LocalDate,
-        expectedEndDate: LocalDate
-    ): Boolean {
-        return startDate == expectedStartDate &&
-                endDate == expectedEndDate &&
-                rates.map { it.currency }.containsAll(expectedSpecificCurrencies)
-    }
-
-    private inline fun <T> wrapExceptions(block: () -> T?): T? {
+    private inline fun <T> wrapExceptions(block: () -> T): T {
         return try {
             block.invoke()
         } catch (exception: Throwable) {

@@ -10,6 +10,7 @@ versions.androidx_core_ktx = "1.3.0"
 versions.constraintlayout = "1.1.3"
 versions.lifecycle = "2.2.0"
 versions.material = "1.2.0-beta01"
+versions.groupie = "2.8.0"
 
 versions.koin = "2.1.6"
 versions.timber = "4.7.1"
@@ -94,5 +95,10 @@ def room = [:]
 room.runtime = "androidx.room:room-runtime:$versions.room"
 room.ktx = "androidx.room:room-ktx:$versions.room"
 deps.room = room
+
+def groupie = [:]
+groupie.core = "com.xwray:groupie:$versions.groupie"
+groupie.ktx = "com.xwray:groupie-kotlin-android-extensions:$versions.groupie"
+deps.groupie = groupie
 
 ext.deps = deps

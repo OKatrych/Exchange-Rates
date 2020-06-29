@@ -1,20 +1,12 @@
 package eu.okatrych.data.source.local.model
 
-import androidx.room.Embedded
 import androidx.room.Entity
-import androidx.room.PrimaryKey
-import androidx.room.TypeConverters
-import eu.okatrych.data.source.local.model.converter.RateValueTypeConverter
-import eu.okatrych.domain.model.RateValue
 
-@Entity(tableName = "exchange_rates")
-data class RoomExchangeRate(
-    @PrimaryKey
+@Entity(tableName = "exchange_rates", primaryKeys = ["date", "baseCurrency", "currency"])
+data class RoomRateValue(
+    val date: String,
     val baseCurrency: String,
-    val startDate: String,
-    val endDate: String,
-    @Embedded
-    @TypeConverters(RateValueTypeConverter::class)
-    val rates: List<RateValue>,
+    val currency: String,
+    val rate: Double,
     val timestamp: String
 )

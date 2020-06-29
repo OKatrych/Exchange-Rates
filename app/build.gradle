@@ -53,6 +53,9 @@ dependencies {
 
     implementation deps.date.threetenabp
 
+    implementation deps.groupie.core
+    implementation deps.groupie.ktx
+
     kapt deps.androidx.lifecycle_compiler
 
     testImplementation deps.koin.test

@@ -3,7 +3,7 @@ package eu.okatrych.data.source
 import eu.okatrych.data.source.local.ILocalExchangeRateDataSource
 import eu.okatrych.data.source.remote.IRemoteExchangeRateDataSource
 import eu.okatrych.domain.model.Currency
-import eu.okatrych.domain.model.ExchangeRate
+import eu.okatrych.domain.model.RateValue
 import eu.okatrych.domain.repository.IExchangeRateRepository
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
@@ -17,32 +17,32 @@ class ExchangeRateRepository(
 ) : IExchangeRateRepository {
 
     // TODO add cache
-    override suspend fun getExchangeRate(
+    override suspend fun getExchangeRates(
         baseCurrency: Currency,
         specificCurrencies: List<Currency>,
         startDate: LocalDate,
         endDate: LocalDate
-    ): ExchangeRate {
-        val localExchangeRate: ExchangeRate? = localDataSource.getExchangeRate(
+    ): List<RateValue> {
+        val localExchangeRates: List<RateValue> = localDataSource.getExchangeRates(
             baseCurrency,
             specificCurrencies,
             startDate,
             endDate
         )
         // use local exchange rate when it's present and is not expired (timestamp < 10 minutes)
-        return if (localExchangeRate != null && localExchangeRate.timestamp
-                .plus(EXCHANGE_RATE_TTL, ChronoUnit.MINUTES)
-                .isAfter(LocalDateTime.now())
+        return if (localExchangeRates.isNotEmpty() && localExchangeRates.all {
+                it.timestamp
+                    .plus(EXCHANGE_RATE_TTL, ChronoUnit.MINUTES)
+                    .isAfter(LocalDateTime.now())
+            }
         ) {
-            localExchangeRate
+            localExchangeRates
         } else {
-            remoteDataSource.getExchangeRate(
+            remoteDataSource.getExchangeRates(
                 baseCurrency, specificCurrencies, startDate, endDate
-            )?.also {
-                localDataSource.insertExchangeRate(it)
-            } ?: throw IExchangeRateRepository.Error.RemoteDataSourceError.UnknownError(
-                NullPointerException("remoteDataSource.getExchangeRate() returned null value")
-            )
+            ).also {
+                localDataSource.insertExchangeRates(it)
+            }
         }
     }
 }
